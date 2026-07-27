@@ -37,7 +37,7 @@ Connecting a console to a PC VPN normally results in a Strict NAT anyway, becaus
 ## Step-by-Step Setup
 
 ### 1. Configure the VPN
-1.  Open your VPN app on Ubuntu.
+1.  Open your VPN app on your Linux PC.
 2.  Ensure Port Forwarding is enabled in your settings *(If using Proton VPN, go to Settings -> Advanced, and toggle the NAT Type from Strict to Moderate)*.
 3.  Connect to a P2P-supported server and **copy the 5-digit Forwarded Port Number** displayed on your dashboard.
 
@@ -47,18 +47,22 @@ Connecting a console to a PC VPN normally results in a Strict NAT anyway, becaus
 Open a terminal (`Ctrl` + `Alt` + `T`) and run `ip addr` to identify your network interface names:
 
 *   **VPN Adapter:** Usually `tun0` or `wg0`.
+![ip addr](assets/terminal.png "identify VPN adapter (tun0 here)")
 *   **Physical Ethernet:** The port wired to your console (usually `eno2`, `eth0`, or `enp3s0`).
+![ip addr](assets/terminal2.png "identify physical ethernet (eno2 here)")
 *   **Console IP:** Check your console's network settings to find its current IP address (usually assigned automatically by Ubuntu, looking something like `10.42.0.X`).
+
+Settings > Network > Connection Status > View Connection Status
+
+Make sure your console is connected to your PC via ethernet!
 
 ### 3. Clone and Run the Script
 Clone this repository to your Ubuntu machine:
 
 ```bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-cd YOUR_REPO_NAME
+git clone https://github.com/TDMillar-Biology/PS5_VPN_P2P/
+cd PS5_VPN_P2P
 ```
-
-
 Open ps5_vpn.sh in a text editor and update the 4 configuration variables at the very top to match your setup, then Make the script executable and run it with root permissions:
 
 ```bash
@@ -67,7 +71,7 @@ chmod +x ps5_vpn.sh
 sudo ./ps5_vpn.sh
 ```
 
-4. Clear the Console Cache
+### 4. Clear the Console Cache
 Go to your console's network settings menu and select Test Internet Connection. This forces the console to drop its old network memory and fetch the new route.
 
 Launch your p2p game. Your network status indicator will show as Open or Moderate, and matchmaking queues will populate immediately.

@@ -71,6 +71,25 @@ chmod +x ps5_vpn.sh
 sudo ./ps5_vpn.sh
 ```
 
+Don't want to clone the repo just for one script? Swap in your variables by hand
+
+```bash
+# 1. Forward incoming traffic from the VPN Port to the Game's default port
+iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p udp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
+iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p tcp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
+
+# 2. Explicitly allow the game traffic through the Linux forwarding chain
+iptables -A FORWARD -p udp -d $PS5_IP --dport $GAME_PORT -j ACCEPT
+iptables -A FORWARD -p tcp -d $PS5_IP --dport $GAME_PORT -j ACCEPT
+
+# 3. Outbound VPN Port Mapping (Symmetric NAT Bypass)
+# This forces the PS5's outbound game traffic to match the exact port Proton gave you.
+iptables -t nat -A POSTROUTING -o $VPN_INTERFACE -p udp --sport $GAME_PORT -j SNAT --to-source :$PROTON_PORT
+iptables -t nat -A POSTROUTING -o $VPN_INTERFACE -p tcp --sport $GAME_PORT -j SNAT --to-source :$PROTON_PORT
+```
+
+
+
 ### 4. Clear the Console Cache
 Go to your console's network settings menu and select Test Internet Connection. This forces the console to drop its old network memory and fetch the new route.
 

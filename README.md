@@ -78,7 +78,7 @@ Settings > Network > Connection Status > View Connection Status
 Make sure your console is connected to your PC via ethernet!
 
 ### 3. Clone and Run the Script
-Clone this repository to your Ubuntu machine:
+Clone this repository to your Linux machine:
 
 ```bash
 git clone https://github.com/TDMillar-Biology/PS5_VPN_P2P/

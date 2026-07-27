@@ -4,6 +4,9 @@ Route your PS5 through a paid VPN service which allows you to toggle from NAT:st
 
 ## TLDR -- Full guide follows
 ```bash
+# 0. Enable Packet forwarding
+sysctl -w net.ipv4.ip_forward=1 > /dev/null
+
 # 1. Forward incoming traffic from the VPN Port to the Game's default port
 iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p udp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
 iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p tcp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
@@ -95,6 +98,10 @@ sudo ./ps5_vpn.sh
 Don't want to clone the repo just for one script? Swap in your variables by hand
 
 ```bash
+
+# 0. Enable Packet forwarding
+sysctl -w net.ipv4.ip_forward=1 > /dev/null
+
 # 1. Forward incoming traffic from the VPN Port to the Game's default port
 iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p udp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
 iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p tcp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT

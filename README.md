@@ -2,7 +2,7 @@
 
 Route your PS5 through a paid VPN service which allows you to toggle from NAT:strict to NAT:moderate to allow for more peer to peer connections in match making on legacy multiplayer games like Call of Duty Black ops I and II.
 
-## TLDR
+## TLDR -- Full guide follows
 ```bash
 # 1. Forward incoming traffic from the VPN Port to the Game's default port
 iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p udp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT

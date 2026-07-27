@@ -1,5 +1,21 @@
 # PS5 Black Ops II Lobby Fix: Bypassing Strict NAT with a Linux VPN Gateway
 
+## TLDR
+```bash
+# 1. Forward incoming traffic from the VPN Port to the Game's default port
+iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p udp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
+iptables -t nat -A PREROUTING -i $VPN_INTERFACE -p tcp --dport $PROTON_PORT -j DNAT --to-destination $PS5_IP:$GAME_PORT
+
+# 2. Explicitly allow the game traffic through the Linux forwarding chain
+iptables -A FORWARD -p udp -d $PS5_IP --dport $GAME_PORT -j ACCEPT
+iptables -A FORWARD -p tcp -d $PS5_IP --dport $GAME_PORT -j ACCEPT
+
+# 3. Outbound VPN Port Mapping (Symmetric NAT Bypass)
+# This forces the PS5's outbound game traffic to match the exact port Proton gave you.
+iptables -t nat -A POSTROUTING -o $VPN_INTERFACE -p udp --sport $GAME_PORT -j SNAT --to-source :$PROTON_PORT
+iptables -t nat -A POSTROUTING -o $VPN_INTERFACE -p tcp --sport $GAME_PORT -j SNAT --to-source :$PROTON_PORT
+```
+
 ## The Problem
 *Call of Duty: Black Ops 1 and 2* were recently ported to PlayStation with fresh servers, but these direct ports carry some relics of the past—namely, peer-to-peer (P2P) matchmaking.
 

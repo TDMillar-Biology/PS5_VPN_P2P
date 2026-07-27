@@ -1,5 +1,7 @@
 # PS5 Black Ops II Lobby Fix: Bypassing Strict NAT with a Linux VPN Gateway
 
+Route your PS5 through a paid VPN service which allows you to toggle from NAT:strict to NAT:moderate to allow for more peer to peer connections in match making on legacy multiplayer games like Call of Duty Black ops I and II.
+
 ## TLDR
 ```bash
 # 1. Forward incoming traffic from the VPN Port to the Game's default port
@@ -17,22 +19,22 @@ iptables -t nat -A POSTROUTING -o $VPN_INTERFACE -p tcp --sport $GAME_PORT -j SN
 ```
 
 ## The Problem
-*Call of Duty: Black Ops 1 and 2* were recently ported to PlayStation with fresh servers, but these direct ports carry some relics of the past—namely, peer-to-peer (P2P) matchmaking.
+*Call of Duty: Black Ops 1 and 2* were recently ported to PlayStation with fresh servers, however, the ports still use peer-to-peer (P2P) matchmaking.
 
-Because of how modern home networks are configured, many players connect to these servers with a **Strict NAT**. This effectively excludes you from the majority of your peers in P2P matchmaking, creating an endless "searching for lobby" loop. This technique will bypass that restriction, and it works for nearly any older P2P multiplayer game struggling with NAT issues.
+Because of how modern home networks are configured, many players connect to these servers with a **Strict NAT**. This effectively excludes you from the majority of your peers in P2P matchmaking, creating an endless "searching for lobby" loop. This technique will bypass that restriction, and it works for nearly any older P2P multiplayer game for which you can't find a lobby because of NAT:Strict.
 
 ### Try These Quick Fixes First
-Before you pull this repo, try these standard router fixes. If they work, you don't need this script!
+Before you pull this repo, try these standard router fixes. If they work, you don't need the rest
 
 *   **Enable UPnP:** Turn on Universal Plug and Play (UPnP) in your router settings.
 *   **Port Forwarding:** Manually forward Port `3074` (TCP/UDP) in your router to your console's local IP.
 
-If neither of those work, your ISP likely uses **CGNAT (Carrier-Grade NAT)**—which is incredibly common on 5G, fiber, and apartment networks—or you share an upstream firewall you can't control. The easiest way to punch through those headaches is by tunneling your traffic through a VPN to achieve a **Moderate/Open NAT**.
+If neither of those work, your ISP likely uses **CGNAT (Carrier-Grade NAT)**—which is common on 5G, fiber, and apartment networks—or you share an upstream firewall you can't control. The easiest way to circumvent those headaches is by tunneling your traffic through a VPN to achieve a **Moderate/Open NAT**.
 
 ---
 
 ## The Bird's-Eye Solution
-Since you cannot change your ISP's network settings, you have to bypass them entirely. This project uses a premium VPN with port-forwarding capabilities (like Proton VPN) to build an encrypted tunnel right past your ISP's restrictions. We then use a Linux PC to bridge that tunnel directly to your console.
+Since you cannot change your ISP's network settings, you have to bypass them entirely. This project uses a paid VPN with port-forwarding capabilities (like Proton VPN) to build an encrypted tunnel right past your ISP's limitations. We then use a Linux PC to bridge that tunnel directly to your console.
 
 ### The Technical "Gotcha" This Script Solves
 Connecting a console to a PC VPN normally results in a Strict NAT anyway, because Linux and VPNs naturally randomize outgoing ports for security. This script uses native Linux `iptables` to perform two critical tasks:
@@ -55,6 +57,9 @@ Connecting a console to a PC VPN normally results in a Strict NAT anyway, becaus
 ### 1. Configure the VPN
 1.  Open your VPN app on your Linux PC.
 2.  Ensure Port Forwarding is enabled in your settings *(If using Proton VPN, go to Settings -> Advanced, and toggle the NAT Type from Strict to Moderate)*.
+
+![Proton Settings](assets/settings.png "proton settings -- turn on moderate nat")
+
 3.  Connect to a P2P-supported server and **copy the 5-digit Forwarded Port Number** displayed on your dashboard.
 
 ![Proton GUI](assets/proton_gui.png "proton gui -- you need your 5 digit forwarded port number")
